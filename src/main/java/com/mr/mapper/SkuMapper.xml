@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mr.mapper.SkuMapper">
+
+    <sql id="listSkuSql">
+        select spu.Id spuId ,spu.* ,sku.Id skuId ,sku.*  from
+            t_mall_product spu,
+            t_mall_sku sku
+        WHERE
+          spu.Id = sku.shp_id
+        and
+         spu.flbh2 = #{flbh2}
+
+    </sql>
+
+    <select id="listSkuByFlbh2" resultMap="listSkuByFlbh2Map">
+        <include refid="listSkuSql"></include>
+    </select>
+
+    <resultMap id="listSkuByFlbh2Map" type="com.mr.model.OBJECTSku" autoMapping="true">
+        <id column="skuId" property="id"></id>
+        <!--private TMallProduct spu;-->
+        <association property="spu" javaType="com.mr.model.TMallProduct" autoMapping="true">
+            <id column="spuId" property="id"></id>
+        </association>
+    </resultMap>
+
+    <select id="listSkuByAttrAndClass2" resultMap="listSkuByFlbh2Map">
+        <include refid="listSkuSql"></include>
+        and
+        sku.id
+        in (
+        select  t0.sku_id from
+        <foreach collection="attrValueList" item="av" separator="," index="i">
+            (select * from t_mall_sku_attr_value sav where sav.shxm_id = #{av.shxmId} AND sav.shxzh_id = #{av.shxzhId}) t${i}
+        </foreach>
+        <if test="attrValueList.size > 1">
+            <where>
+                <foreach collection="attrValueList" index="i">
+                    <if test="i > 0">
+                        and t${i-1}.sku_id = t${i}.sku_id
+                    </if>
+                </foreach>
+            </where>
+        </if>
+        )
+    </select>
+
+    <select id="listSkuBySpuId" parameterType="int" resultType="com.mr.model.TMallSku">
+        SELECT * FROM t_mall_sku WHERE shp_id = #{spuId}
+    </select>
+
+
+    <select id="listItemBySkuId" parameterType="int" resultMap="listItemBySkuIdMap">
+        select
+            sku.id as sku_id , sku.*,
+            img.id as img_id , img.*,
+            attr.shxm_mch as shxMch,
+            CONCAT(val.shxzh,val.shxzh_mch) as shxZh
+        from
+            t_mall_sku sku,
+            t_mall_product spu,
+            t_mall_product_image img,
+            t_mall_sku_attr_value av,
+            t_mall_attr attr,
+            t_mall_value val
+        where
+            sku.shp_id = spu.Id
+        AND
+            spu.Id = img.shp_id
+        AND
+            sku.Id = av.sku_id
+        AND
+            av.shxm_id = attr.Id
+        AND
+            av.shxzh_id = val.Id
+        AND
+            sku.Id = #{skuId}
+
+    </select>
+
+    <resultMap id="listItemBySkuIdMap" type="com.mr.model.TMallSkuItemVO" autoMapping="true">
+        <id property="id" column="sku_id"></id>
+
+        <collection property="imgList" ofType="com.mr.model.TMallProductImage" autoMapping="true">
+            <id property="id" column="img_id"></id>
+        </collection>
+        <collection property="avList" ofType="com.mr.model.OBJECTAVVO" autoMapping="true"></collection>
+    </resultMap>
+
+</mapper>

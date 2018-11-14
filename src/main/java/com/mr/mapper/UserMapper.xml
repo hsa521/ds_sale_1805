@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mr.mapper.UserMapper">
+
+    <select id="findUserByNamePswd" resultType="tMallUserAccount">
+        select * from t_mall_user_account user
+        WHERE
+        user .yh_mch = #{userName}
+        AND
+        user .yh_mm = #{password}
+    </select>
+
+
+
+</mapper>

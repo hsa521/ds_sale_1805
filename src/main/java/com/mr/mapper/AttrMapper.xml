@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mr.mapper.AttrMapper">
+
+    <select id="findAttrByclass2" parameterType="int" resultMap="findAttrByclass2Map">
+        select
+        attr.* ,attr.id as attr_id ,val.*,
+        val.id as val_id
+        from
+        t_mall_attr attr ,
+        t_mall_value val
+        where
+        attr.Id = val.shxm_id
+        and
+        attr.flbh2 = #{flbh2}
+    </select>
+
+    <resultMap id="findAttrByclass2Map" type="oBJECTTMallAttr" autoMapping="true">
+        <id property="id" column="attr_id"></id>
+        <collection property="valueList" ofType="tMallValue" autoMapping="true">
+            <id property="id" column="val_id"></id>
+        </collection>
+    </resultMap>
+
+</mapper>

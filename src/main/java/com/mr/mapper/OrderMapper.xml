@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mr.mapper.OrderMapper">
+    <select id="listAddressByYhId" parameterType="int" resultType="com.mr.model.TMallAddress">
+        select * from t_mall_address where yh_id = #{yhId}
+    </select>
+
+    <insert id="saveOrder" parameterType="com.mr.model.TMallOrderVO"
+            useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+
+        INSERT INTO `t_mall_order` (
+        `zje`,
+        `jdh`,
+        `yh_id`,
+        `yjsdshj`,
+        `dzh_id`,
+        `shhr`,
+        `dzh_mch`
+        )
+        VALUES
+        (
+        #{zje},
+        #{jdh},
+        #{yhId},
+        #{yjsdshj},
+        #{dzhId},
+        #{shhr},
+        #{dzhMch}
+        )
+
+    </insert>
+
+    <insert id="saveFlow" parameterType="map" useGeneratedKeys="true"
+            keyProperty="flow.id" keyColumn="id">
+        INSERT INTO `t_mall_flow` (
+        `psfsh`,
+        `psshj`,
+        `psmsh`,
+        `yh_id`,
+        `dd_id`
+        )
+        VALUES
+        (
+        #{flow.psfsh},
+        #{flow.psshj},
+        #{flow.psmsh},
+        #{flow.yhId},
+        #{orderId}
+        )
+    </insert>
+
+    <insert id="saveInfo" parameterType="map">
+
+        INSERT INTO `t_mall_order_info` (
+        `flow_id`,
+        `sku_jg`,
+        `sku_shl`,
+        `sku_kcdz`,
+        `gwch_id`,
+        `dd_id`,
+        `sku_id`,
+        `sku_mch`,
+        `shp_tp`
+        )
+        VALUES
+        <foreach collection="infoList" item="info" separator=",">
+            (
+            #{flowId},
+            #{info.skuJg},
+            #{info.skuShl},
+            #{info.skuKcdz},
+            #{info.gwchId},
+            #{orderId},
+            #{info.skuId},
+            #{info.skuMch},
+            #{info.shpTp}
+            )
+        </foreach>
+
+    </insert>
+
+    <delete id="deleteCartByCarts" parameterType="list">
+        delete from t_mall_shoppingcar where id in
+        <foreach collection="cartIds" separator="," open="(" close=")" item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

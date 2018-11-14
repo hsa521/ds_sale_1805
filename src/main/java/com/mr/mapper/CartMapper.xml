@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mr.mapper.CartMapper">
+
+    <select id="listCartByUserId" parameterType="int" resultType="com.mr.model.TMallShoppingCar">
+        select * FROM  t_mall_shoppingcar where yh_id = #{userId}
+    </select>
+
+    <insert id="saveCart" parameterType="com.mr.model.TMallShoppingCar">
+        INSERT INTO `t_mall_shoppingcar` (
+        `sku_mch`,
+        `sku_jg`,
+        `tjshl`,
+        `hj`,
+        `yh_id`,
+        `shp_id`,
+        `sku_id`,
+        `shp_tp`,
+        `shfxz`,
+        `kcdz`
+        )
+        VALUES
+        (
+        #{skuMch},
+        #{skuJg},
+        #{tjshl},
+        #{hj},
+        #{yhId},
+        #{shpId},
+        #{skuId},
+        #{shpTp},
+        #{shfxz},
+        #{kcdz}
+
+        )
+    </insert>
+
+    <update id="updateCartBySkuIdAndUserId" parameterType="map">
+        update t_mall_shoppingcar
+        set
+        tjshl = #{tjshl}, hj = #{hj}
+        where
+        yh_id = #{userId}
+        AND
+        sku_id = #{skuId}
+    </update>
+
+    <insert id="saveCartList" parameterType="map">
+        INSERT INTO `t_mall_shoppingcar` (
+        `sku_mch`,
+        `sku_jg`,
+        `tjshl`,
+        `hj`,
+        `yh_id`,
+        `shp_id`,
+        `sku_id`,
+        `shp_tp`,
+        `shfxz`,
+        `kcdz`
+        )
+        VALUES
+        <foreach collection="cartList" item="cart" separator=",">
+            (
+            #{cart.skuMch},
+            #{cart.skuJg},
+            #{cart.tjshl},
+            #{cart.hj},
+            #{userId},
+            #{cart.shpId},
+            #{cart.skuId},
+            #{cart.shpTp},
+            #{cart.shfxz},
+            #{cart.kcdz}
+            )
+        </foreach>
+    </insert>
+
+    <select id="findCartBySkuIdAndUserId" resultType="com.mr.model.TMallShoppingCar">
+       select * from t_mall_shoppingcar where sku_id = #{skuId} AND  yh_id = #{userId}
+    </select>
+    
+    <update id="updateCartShfxzBySkuIdAndUserId" parameterType="map">
+        update t_mall_shoppingcar SET shfxz = #{shfxz} WHERE yh_id = #{userId} AND sku_id = #{skuId}
+    </update>
+
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE configuration  
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	
+	<settings>  
+	        <setting name="logImpl" value="LOG4J"/>  
+	        <!-- 是否开启自动驼峰命名规则 -->
+	        <setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+
+	<!--別名  -->
+	<typeAliases>
+		<!-- com.mr.model 包下的所有對象都会使用别名-->
+	  <package name="com.mr.model"/>
+	</typeAliases>
+	<plugins>
+		<plugin interceptor="com.github.pagehelper.PageInterceptor">
+			<!--分页参数合理化  -->
+			<property name="reasonable" value="true"/>
+		</plugin>
+	</plugins>
+</configuration>

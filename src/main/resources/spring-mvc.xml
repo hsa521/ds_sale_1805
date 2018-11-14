@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+
+	<!-- 扫描注解 -->
+	<context:component-scan base-package="com.mr" use-default-filters="false">
+		<!-- 只对@Controller注解进行扫描 -->
+		<context:include-filter type="annotation"  
+				expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	
+	
+	<!-- 注解驱动：自动加载最新版的处理器映射器和适配器 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+	
+	
+	<!-- 直接转发页面 -->
+	<!-- 
+		path：访问的路径
+		view-name：页面
+	 -->
+<!-- 	<mvc:view-controller path="user/addUserPage.do" view-name="user/add"/> -->
+	
+	<!--  配置视图解析器  -->
+	<bean  class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+         <!-- 这里的配置我的理解是自动给后面controller 的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->
+         <property name="prefix" value="/WEB-INF/view/" />
+         <property name="suffix" value=".jsp" />
+     </bean>
+     
+
+     <!-- 配置 MultipartResolver -->
+	 <bean id="multipartResolver"
+		  class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		  <property name="defaultEncoding" value="UTF-8"></property>
+		  <property name="maxUploadSize" value="2048000"></property>
+	 </bean>
+</beans>
